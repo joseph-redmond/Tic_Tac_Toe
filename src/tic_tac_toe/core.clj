@@ -157,7 +157,7 @@
   (if (playerStarts?)
     playerPiece
     (changePlayer playerPiece)))
-(getStartingPlayer "X")
+
 (defn printWinnerMessageAndReturnTrue [board player]
   (let [boardIsWinner (checkIfWinnerFound board player)]
     (if boardIsWinner
@@ -177,6 +177,7 @@
 (defn deleteTemporaryFiles []
   (deleteFile "/workspace/Tic_Tac_Toe/boardState.txt")
   (deleteFile "/workspace/Tic_Tac_Toe/currentPlayer.txt"))
+
 (defn runGame []
   (deleteTemporaryFiles)
   (def playersPiece (grabPlayersPiece))
