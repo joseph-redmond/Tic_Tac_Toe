@@ -3,12 +3,6 @@
 (ns tic-tac-toe.core
   (:gen-class))
 
-;; (identity startingBoard)
-
-
-
-;; (clearConsole)
-
 (defn clearConsole []
   (println "\033[H\033[2J")
   (flush))
@@ -18,7 +12,6 @@
   "Returns a list of cells without a player marker"
   [currentBoardState]
   (mapv identity (filter #(integer? %) currentBoardState)))
-;; (getAllEmptyCellIndexes startingBoard)
 
 (defn checkIfWinnerFoundHorizontally [currentBoardState currentMark]
   "Returns true if the mark is a winner in the horizontal direction otherwise false"
@@ -27,7 +20,6 @@
     (and (= (nth currentBoardState 3) currentMark) (= (nth currentBoardState 4) currentMark) (= (nth currentBoardState 5) currentMark)) true
     (and (= (nth currentBoardState 6) currentMark) (= (nth currentBoardState 7) currentMark) (= (nth currentBoardState 8) currentMark)) true
     :else false))
-;; (checkIfWinnerFoundHorizontally startingBoard "X")
 
 (defn checkIfWinnerFoundVertically [currentBoardState currentMark]
   "Returns true if the mark is a winner in the vertical direction otherwise false"
@@ -36,7 +28,6 @@
     (and (= (nth currentBoardState 1) currentMark) (= (nth currentBoardState 4) currentMark) (= (nth currentBoardState 7) currentMark)) true
     (and (= (nth currentBoardState 2) currentMark) (= (nth currentBoardState 5) currentMark) (= (nth currentBoardState 8) currentMark)) true
     :else false))
-;; (checkIfWinnerFoundVertically startingBoard "O")
 
 (defn checkIfWinnerFoundDiagonally [currentBoardState currentMark]
   "Returns true if the mark is a winner in the diagonal direction otherwise false"
@@ -44,7 +35,6 @@
     (and (= (nth currentBoardState 0) currentMark) (= (nth currentBoardState 4) currentMark) (= (nth currentBoardState 8) currentMark)) true
     (and (= (nth currentBoardState 2) currentMark) (= (nth currentBoardState 4) currentMark) (= (nth currentBoardState 6) currentMark)) true
     :else false))
-;; (checkIfWinnerFoundDiagonally startingBoard "X")
 
 (defn checkIfWinnerFound [currentBoardState currentMark]
   "Return true if the mark is a winner in any direction false otherwise"
@@ -53,9 +43,6 @@
     (checkIfWinnerFoundVertically currentBoardState currentMark) true
     (checkIfWinnerFoundDiagonally currentBoardState currentMark) true
     :else false))
-;; (checkIfWinnerFound startingBoard "X")
-
-;; (defn minimax [currentBoardState currentMark])
 
 (defn printBoard [currentBoardState playersPiece]
   "Loops through the provided board and prints it to the console"
@@ -66,7 +53,6 @@
                  (if (= 0 (mod (+ y 1) 3))
                    (println ""))
                  (recur (+ y 1)))))
-;; (printBoard startingBoard)
 
 (defn checkIfTie [currentBoardState]
   "Return true if board is full and there is no winner false otherwise"
@@ -75,26 +61,20 @@
     (checkIfWinnerFound currentBoardState "O") false
     (empty? (getAllEmptyCellIndexes currentBoardState)) true
     :else false))
-;; (checkIfTie startingBoard)
-
 
 (defn nextBestMove [currentBoardState]
   "Returns the index of the next best move provided a board state"
   (nth (getAllEmptyCellIndexes currentBoardState) (rand-int (count (getAllEmptyCellIndexes currentBoardState)))))
-;; (nextBestMove startingBoard)
 
 (defn placeNextMove [currentBoardState moveIndex playerMarker]
   "Returns a new board state with the provided move played"
   (assoc currentBoardState moveIndex playerMarker))
-;; (placeNextMove startingBoard 2 "X")
 
 (defn isValidPiece? [piece]
   (cond
     (= (clojure.string/upper-case piece) "X") true
     (= (clojure.string/upper-case piece) "O") true
     :else false))
-;; (isValidPiece? "X")
-;; (isValidPiece? 4)
 
 (defn grabPlayersPiece []
   (println "Which piece would you like to play? [X,O]")
@@ -102,36 +82,29 @@
     (if (isValidPiece? playerPiece)
       (clojure.string/upper-case playerPiece)
       (recur))))
-;; (grabPlayersPiece)
-
 
 (defn coinToss []
   (let [coin (rand-int 2)]
     coin))
-;; (coinToss)
 
 (defn playerStarts? []
   (if (= (coinToss) 0)
     true
     false))
-;; (playerStarts?)
 
 (defn contains-value? [element coll]
   (boolean (some #(= element %) coll)))
-;; (contains-value? 3 (getAllEmptyCellIndexes startingBoard))
 
 (defn playerMoveValid? [move board]
   (try
     (contains-value? (Integer/parseInt move) (getAllEmptyCellIndexes board))
     (catch Exception ex false)))
-;; (playerMoveValid? "8" startingBoard)
 
 (defn getPlayersNextMove [board]
   (let [playerMove (read-line)]
     (if (playerMoveValid? playerMove board)
       (Integer/parseInt playerMove)
       (recur board))))
-;; (getPlayersNextMove startingBoard)
 
 (defn printMessageIfTieAndReturnTrue [board playersPiece]
   (let [boardIsTie (checkIfTie board)]
@@ -140,7 +113,6 @@
     (if boardIsTie
       (println "Game ended in a tie. Better luck next time."))
     boardIsTie))
-;; (printMessageIfTieAndReturnTrue startingBoard)
 
 (defn wouldLikeToPlayAgain? []
   (println "Would you like to play again? (y/n)")
@@ -148,16 +120,11 @@
   (if (= (clojure.string/upper-case playAgain) "Y")
     true
     false))
-;; (wouldLikeToPlayAgain?)
 
 (defn changePlayer [player]
   (if (= player "X")
     "O"
     "X"))
-;; (changePlayer "X")
-;; (changePlayer "Y")
-
-
 
 (defn writeBoardToFile [path board]
   (spit path
@@ -168,16 +135,12 @@
   (let [board (slurp path)]
     (identity (clojure.edn/read-string board))))
 
-;; (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt")
-
 (defn writeCurrentPlayerToFile [path currentPlayer]
   (spit path
         currentPlayer))
-;; (writeCurrentPlayerToFile "/workspace/Tic_Tac_Toe/currentPlayer.txt" "Y")
 
 (defn readCurrentPlayerFromFile [path]
   (identity (slurp path)))
-;; (readCurrentPlayerFromFile "/workspace/Tic_Tac_Toe/currentPlayer.txt")
 
 (defn deleteFile [path]
   (try
@@ -188,9 +151,7 @@
 
 (defn ai_plays [board playerPiece]
   (placeNextMove board (nextBestMove board) (changePlayer playerPiece)))
-;; (ai_plays (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt") "X")
-;; (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt")
-;; (ai_plays startingBoard "X")
+
 
 (defn getStartingPlayer [playerPiece]
   (if (playerStarts?)
@@ -204,7 +165,6 @@
     (if boardIsWinner
       (println "Congragulations" player "You've won! :)"))
     boardIsWinner))
-;; (printWinnerMessageAndReturnTrue startingBoard "X")
 
 (defn printLoserMessageAndReturnTrue [board aiPiece]
   (let [boardIsWinner (checkIfWinnerFound board aiPiece)]
@@ -228,7 +188,6 @@
     (when (and  (< 0 maxPlays) (not (checkIfWinnerFound (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt") playersPiece)) (not (checkIfWinnerFound (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt") (changePlayer playersPiece))) (not (checkIfTie (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt"))))
       (let [currentPlayer (readCurrentPlayerFromFile "/workspace/Tic_Tac_Toe/currentPlayer.txt")
             playingBoard (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt")]
-    ;; (clearConsole)
         (printBoard playingBoard playersPiece)
         (cond
           (= currentPlayer playersPiece) (writeBoardToFile "/workspace/Tic_Tac_Toe/boardState.txt" (placeNextMove playingBoard (getPlayersNextMove playingBoard) playersPiece)) 
@@ -240,35 +199,6 @@
     (printWinnerMessageAndReturnTrue (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt") playersPiece) true
     (printLoserMessageAndReturnTrue (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt") (changePlayer playersPiece)) true
     :else false))
-
-
-;; (checkIfTie (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt"))
-
-  ;; (while (not-empty (getAllEmptyCellIndexes playingBoard))
-  ;;   (printBoard playingBoard)
-  ;;   (def playingBoard (placeNextMove playingBoard (if (= currentPlayer playerPiece)
-  ;;                                                   (getPlayersNextMove playingBoard)
-  ;;                                                   (nextBestMove playingBoard)) currentPlayer))
-  ;;   (def currentPlayer (changePlayer currentPlayer)))
-  ;; (if (printMessageIfTieAndReturnTrue playingBoard)
-  ;;   false
-  ;;   (printWinnerMessageAndReturnTrue playingBoard currentPlayer))
-
-  ;; (if (wouldLikeToPlayAgain?)
-  ;;   (def playingBoard (identity board))
-  ;;   (println "Thank you for playing :)")))
-;; (def playersPiece (grabPlayersPiece))
-
-;; (readFileToBoard "/workspace/Tic_Tac_Toe/boardState.txt")
-
-
-
-
-
-
-;; (doc checkIfWinnerFound)
-
-
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -282,5 +212,3 @@
         (recur (dec playAgain)))))
   (endMessage)
   (deleteTemporaryFiles))
-
-;; (-main)
